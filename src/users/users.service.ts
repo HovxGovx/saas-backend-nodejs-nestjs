@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-    findAll() {
-        return [{ id: 1, email: 'JohnDoe@gmail.com', role: 'USER' }, { id: 2, email: 'JaneSmith@gmail.com', role: 'ADMIN' }];
+   
+    create(createUserDto: CreateUserDto) {
+        return {
+            message: 'User created successfully',
+            data: createUserDto,
+        };
     }
 }
