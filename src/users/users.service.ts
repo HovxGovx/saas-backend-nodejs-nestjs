@@ -22,7 +22,19 @@ export class UsersService {
       },
     });
   }
-
+  async findMe(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+  
+    return user;
+  }
+  
   async findAll() {
     return this.prisma.user.findMany();
   }
