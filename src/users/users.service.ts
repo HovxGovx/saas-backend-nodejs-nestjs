@@ -28,10 +28,12 @@ export class UsersService {
       select: {
         id: true,
         email: true,
-        createdAt: true,
+        role: true,
       },
     });
-  
+    if (!user) {
+      throw new Error('User not found');
+    }
     return user;
   }
   
