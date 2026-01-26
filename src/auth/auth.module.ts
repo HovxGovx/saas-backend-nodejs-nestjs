@@ -8,8 +8,8 @@ import { JwtStrategy } from './jwt.strategy';
   imports: [
     PrismaModule,
     JwtModule.register({
-      secret: 'super-secret-key', 
-      signOptions: { expiresIn: '1d' },
+      secret: 'SECRET_ULTRA_SIMPLE', 
+      signOptions: { expiresIn: '15m' },
     }),
   ],
   controllers: [AuthController],
