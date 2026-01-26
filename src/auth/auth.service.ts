@@ -10,7 +10,7 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
     async validateUser(email: string, password: string) {
-        const user = await this.prisma.user.findUnique({ 
+        const user = await this.prisma.user.findUnique({
             where: { email },
         });
         if (!user) {
@@ -22,18 +22,37 @@ export class AuthService {
         }
         return user;
     }
+    async refreshTokens(refreshToken: string) {
+        try {
+            const payload = this.jwtService.verify(refreshToken, {
+                secret: process.env.JWT_REFRESH_SECRET,
+            });
+            const user = await this.prisma.user.findUnique({
+                where: { id: payload.sub },
+            });
+            if (!user) throw new UnauthorizedException('User not found');
+            return this.generateTokens(user);
+        } catch (err) {
+            throw new UnauthorizedException('Invalid refresh token');
+        }
+    }
+
     generateTokens(user: { id: number; email: string; role: string }) {
-        const payload={
+        const payload = {
             sub: user.id,
             email: user.email,
             role: user.role,
         }
-        const access_token= this.jwtService.sign(payload, {
+        const access_token = this.jwtService.sign(payload, {
             secret: process.env.JWT_ACCESS_SECRET,
             expiresIn: '15m',
-        })
-            return { access_token  };
-      }
+        }),
+        refreshToken = this.jwtService.sign(payload, {
+            secret: process.env.JWT_REFRESH_SECRET,
+            expiresIn: '7d',
+        });
+        return { access_token, refreshToken };
+    }
     async login(email: string, password: string) {
         const user = await this.validateUser(email, password);
         return this.generateTokens(user);

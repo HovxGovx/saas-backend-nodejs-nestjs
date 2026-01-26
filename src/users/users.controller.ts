@@ -23,9 +23,7 @@ export class UsersController {
     return this.usersService.findMe(req.user.userId);
   }
 
-  
-
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
