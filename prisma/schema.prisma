@@ -26,4 +26,5 @@ model User {
   password  String
   role      Role @default(USER)
   createdAt DateTime @default(now())
+  refreshToken String?
 }
